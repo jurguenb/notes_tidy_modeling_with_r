@@ -1,0 +1,65 @@
+---
+title: "Notes Tidy Modeling With R"
+author: "Jurguen Bermudez Mora"
+date: "3/22/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r dependencias}
+library(modeldata)
+library(tidyverse)
+library(rsample)
+
+data(ames)
+```
+
+
+
+# 4.1 EXPLORING IMPORTANT FEATURES
+
+```{r}
+ggplot(ames, aes(x = Sale_Price)) + 
+  geom_histogram(bins = 50)
+```
+
+```{r}
+ggplot(ames, aes(x = Sale_Price)) + 
+  geom_histogram(bins = 50) +
+  scale_x_log10()
+```
+
+* When data like this is skewed in one of the tails, log trans tends to be a good idea. 
+
+* Main drawback is that error mesaures like RMSE are not easy to intepret because they are in log too. 
+
+```{r}
+ames <- ames %>% mutate(Sale_Price = log10(Sale_Price))
+```
+
+# 5 Spending our data 
+
+## 5.1 COMMON METHODS FOR SPLITTING DATA
+
+```{r}
+# Set the random number stream using `set.seed()` so that the results can be 
+# reproduced later. 
+set.seed(123)
+
+ames_split <- initial_split(ames, prop = 0.80)
+
+```
+
+* `ames_split` is a rsplit objet. 
+
+```{r}
+ames_train <- training(ames_split)
+ames_test  <-  testing(ames_split)
+
+dim(ames_train)
+```
+
+
